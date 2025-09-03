@@ -17,14 +17,9 @@ from pprint import pprint
 
 from tqdm import tqdm
 from datasets.urbancars import UrbanCars
-from datasets.DOM_dataset import DOM_dataset
 from datasets.waterbirds import Waterbirds
 from datasets.BFFHQ import BFFHQ
-from datasets.bar import BAR
 from datasets.dogs_and_cats import DogsAndCats
-from datasets.imagenet9 import Imagenet9
-from datasets.imagenetA import ImageNetA
-from datasets.waterbirds_dynamic_rho import WaterbirdsDynamicRho
 from datasets.CMNIST import CMNIST
 
 from models.classifiers import (
@@ -173,45 +168,10 @@ class BaseTrainer:
         test_transform = get_transforms(args.arch, is_training=False)
         
         match args.dataset:
-            case "vas":        
-                rho = args.rho
-                data_folder = args.vas_root
-                #TODO: NUM CLASSES SHOULD BE FIXED OR AUTOMATED
-                os.system(f"python build_metadata.py -i {data_folder} -o {data_folder} --rho {rho} --num_classes 7")
-                self.train_set = DOM_dataset(env="Train", transform=train_transform)
-                self.val_set   = None
-                self.test_set  = DOM_dataset(env="Test", transform=test_transform)
-                self.num_classes = self.train_set.num_classes
-                self.num_groups = self.train_set.num_groups
-                
-                train_set = self._modify_train_set(self.train_set)
-                train_loader = self._get_train_loader(train_set)
-                test_loader = data.DataLoader(
-                    self.test_set,
-                    batch_size = args.batch_size,
-                    num_workers = args.num_workers,
-                )
-                self.train_loader = train_loader
-                self.val_loader   = None
-                self.test_loader  = test_loader
-                
-                return
             
             case "waterbirds":
                 self.train_set = Waterbirds(env="train", transform=train_transform, return_index=True)
                 self.val_set   = Waterbirds(env="val", transform=test_transform, return_index=True)
-                self.test_set  = Waterbirds(env="test", transform=test_transform, return_index=True)
-                
-            case "waterbirds_dynamic":
-                self.train_set = WaterbirdsDynamicRho(
-                    env="train",
-                    transform=train_transform,
-                    bias_amount=args.rho,
-                    strategy="borrow_from_val",
-                    metadata_path=f"./data/waterbirds/waterbird_complete95_forest2water2/waterbirds_{float(args.rho)}_dynamic_metadata.csv",
-                    random_seed=args.start_seed                    
-                )
-                self.val_set = Waterbirds(env="val", transform=test_transform, return_index=True)
                 self.test_set  = Waterbirds(env="test", transform=test_transform, return_index=True)
                 
             case "cmnist":
@@ -233,15 +193,6 @@ class BaseTrainer:
                 self.train_set = UrbanCars(env="train", group_label="both", transform=train_transform)
                 self.val_set   = UrbanCars(env="val", group_label="both", transform=test_transform)
                 self.test_set  = UrbanCars(env="test", group_label="both", transform=test_transform)                
-                
-            case "bar":
-                self.train_set = BAR(env="train", bias_amount=args.rho, return_index=True, transform=train_transform)
-                self.val_set   = BAR(env="val", bias_amount=args.rho, return_index=True, transform=test_transform)
-                self.test_set  = BAR(env="test", bias_amount=args.rho, return_index=True, transform=test_transform)            
-            case "imagenet9A":
-                self.train_set = Imagenet9(env="train", transform=train_transform, return_index=True)
-                self.val_set   = ImageNetA(transform=test_transform, external_cls_to_idx=self.train_set.CLASS_TO_INDEX)
-                self.test_set  = ImageNetA(transform=test_transform, external_cls_to_idx=self.train_set.CLASS_TO_INDEX)
             
             case _:
                 raise NotImplementedError()

@@ -9,14 +9,7 @@ import torch
 import torchvision.models as models
 import torch.nn as nn
 import torchvision.transforms as transforms
-import open_clip
 import torch.nn.functional as F
-
-
-from .clip_imagenet_zeroshot_data import (
-    imagenet_classnames,
-    openai_imagenet_template,
-)
 from tqdm import tqdm
 
 
@@ -152,78 +145,3 @@ class LastLayerEnsemble(nn.Module):
         else:
             dist_shift = F.softmax(self.dist_shift_predictor(x), dim=1)
             return (logits_per_dist_shift * dist_shift.unsqueeze(-1)).sum(dim=1)
-
-
-class CLIPIN1KZeroShotClassifier(nn.Module):
-    def __init__(self, clip_model, device, use_amp=False):
-        super().__init__()
-        self.clip_model = clip_model
-
-        # from https://github.com/mlfoundations/open_clip/blob/main/src/training/zero_shot.py
-        zeroshot_weights = []
-
-        for classname in tqdm(imagenet_classnames, desc="build CLIP IN1K classifier"):
-            texts = [
-                template(classname) for template in openai_imagenet_template
-            ]  # format with class
-            texts = open_clip.tokenize(texts).to(device)  # tokenize
-            with torch.no_grad():
-                with torch.cuda.amp.autocast(enabled=use_amp):
-                    class_embeddings = clip_model.encode_text(texts)
-                    class_embedding = F.normalize(class_embeddings, dim=-1).mean(
-                        dim=0
-                    )
-                    class_embedding /= class_embedding.norm()
-            zeroshot_weights.append(class_embedding)
-
-        self.zeroshot_weights = torch.stack(zeroshot_weights, dim=1).to(device)
-
-    def forward(self, images):
-        image_features = self.clip_model.encode_image(images)
-        image_features = F.normalize(image_features, dim=-1)
-        logits = 100.0 * image_features @ self.zeroshot_weights
-        return logits
-
-
-class CLIPIN1KFTClassifier(torch.nn.Module):
-    def __init__(self, clip_model, feature_dim, num_classes, device, use_amp=False):
-        super(CLIPIN1KFTClassifier, self).__init__()
-        self.clip_model = clip_model
-        self.classification_head = torch.nn.Linear(feature_dim, num_classes)
-
-        zero_shot_weights = self._build_zero_shot_weights(device, use_amp)
-        with torch.no_grad():
-            self.classification_head.weight = torch.nn.Parameter(zero_shot_weights.clone())
-            self.classification_head.bias.zero_()
-
-        # Note: modified. Get rid of the language part.
-        if hasattr(self.clip_model, 'transformer'):
-            delattr(self.clip_model, 'transformer')
-
-    def _build_zero_shot_weights(self, device, use_amp):
-        zeroshot_weights = []
-
-        for classname in tqdm(imagenet_classnames, desc="build CLIP IN1K classifier"):
-            texts = [
-                template(classname) for template in openai_imagenet_template
-            ]  # format with class
-            texts = open_clip.tokenize(texts).to(device)  # tokenize
-            with torch.no_grad():
-                with torch.cuda.amp.autocast(enabled=use_amp):
-                    class_embeddings = self.clip_model.encode_text(texts)
-                    class_embedding = F.normalize(class_embeddings, dim=-1).mean(
-                        dim=0
-                    )
-                    class_embedding /= class_embedding.norm()
-            zeroshot_weights.append(class_embedding)
-
-        zeroshot_weights = torch.stack(zeroshot_weights, dim=1).to(device)
-        return 100 * zeroshot_weights.t()
-
-    def forward(self, images, return_features=False):
-        features = self.clip_model.encode_image(images)
-        features = features / features.norm(dim=-1, keepdim=True)
-        logits = self.classification_head(features)
-        if return_features:
-            return logits, features
-        return logits
