@@ -16,7 +16,7 @@ import torch.nn as nn
 from tqdm import tqdm
 import wandb
 from .base_trainer import BaseTrainer
-from utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
+from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
 from torch.utils.data.sampler import WeightedRandomSampler
 from torch import autograd
 

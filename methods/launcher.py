@@ -10,8 +10,8 @@ import copy
 import os
 
 
-from methods import method_to_trainer
-from utils import slurm_wandb_argparser
+from ..methods import method_to_trainer
+from ..utils import slurm_wandb_argparser
 
 
 def parse_args():

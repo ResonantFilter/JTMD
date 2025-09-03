@@ -14,7 +14,7 @@ import torch
 
 from tqdm import tqdm
 from .base_trainer import BaseTrainer
-from utils.advanced_metrics import AverageMeter
+from ..utils.advanced_metrics import AverageMeter
 from torch.utils.data import Subset, ConcatDataset
 
 

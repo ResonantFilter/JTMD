@@ -15,8 +15,8 @@ import torch
 from tqdm import tqdm
 import wandb
 from .base_trainer import BaseTrainer
-from utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
-from models.classifiers import get_classifier
+from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
+from ..models.classifiers import get_classifier
 
 EPS = 1e-6
 

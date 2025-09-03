@@ -12,11 +12,11 @@ LICENSE file in the root directory of this source tree.
 import torch
 import torch.nn as nn
 
-from utils.idx_dataset import IdxDataset
-from utils.EMA_torch_gpu import EMAGPU as EMA
+from ..utils.idx_dataset import IdxDataset
+from ..utils.EMA_torch_gpu import EMAGPU as EMA
 from tqdm import tqdm
-from models.criterion import GeneralizedCECriterion
-from models.classifiers import get_classifier
+from ..models.criterion import GeneralizedCECriterion
+from ..models.classifiers import get_classifier
 from .base_trainer import BaseTrainer
 
 

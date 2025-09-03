@@ -15,19 +15,19 @@ from pprint import pprint
 
 
 from tqdm import tqdm
-from datasets.urbancars import UrbanCars
-from datasets.waterbirds import Waterbirds
-from datasets.BFFHQ import BFFHQ
-from datasets.dogs_and_cats import DogsAndCats
-from datasets.CMNIST import CMNIST
+from ..datasets.urbancars import UrbanCars
+from ..datasets.waterbirds import Waterbirds
+from ..datasets.BFFHQ import BFFHQ
+from ..datasets.dogs_and_cats import DogsAndCats
+from ..datasets.CMNIST import CMNIST
 
-from models.classifiers import (
+from ..models.classifiers import (
     get_classifier,
     get_transforms,
 )
 
-from utils.reprod import set_seed
-from utils.advanced_metrics import SubgroupMetricsTracker, eval_inacc_and_gap
+from ..utils.reprod import set_seed
+from ..utils.advanced_metrics import SubgroupMetricsTracker, eval_inacc_and_gap
 
 
 class BaseTrainer:

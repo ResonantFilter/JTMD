@@ -10,7 +10,7 @@ import torch
 import wandb
 from tqdm import tqdm
 from .base_trainer import BaseTrainer
-from utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
+from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
 
 
 class ERMTrainer(BaseTrainer):
