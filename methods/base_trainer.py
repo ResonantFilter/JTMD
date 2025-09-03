@@ -116,6 +116,7 @@ class BaseTrainer:
         return train_loader
 
     def _setup_early_stop_metric(self):
+        return 
         args = self.args
 
         early_stop_metric_arg_to_real_metric = {

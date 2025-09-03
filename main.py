@@ -54,7 +54,6 @@ def parse_args():
         default="vas",
     )
     parser.add_argument("--rho", type=float, default=95, required=True)
-    parser.add_argument("--vas_root", type=str, default="./data/Dataset_new_version_june")
     parser.add_argument("--bg_ratio", type=float, default=0.95)
     parser.add_argument("--co_occur_obj_ratio", type=float, default=0.95)
 
