@@ -75,7 +75,7 @@ class GroupDROTrainer(BaseTrainer):
             obj_gt = obj_gt.to(self.device, non_blocking=True)
             group_gt = group_gt.to(self.device, non_blocking=True)
 
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 output = self.classifier(image)
                 loss_per_sample = self.criterion(output, obj_gt)
 

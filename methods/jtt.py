@@ -58,7 +58,7 @@ class JTTTrainer(BaseTrainer):
                 image = image.to(self.device, non_blocking=True)
                 obj_gt = obj_gt.to(self.device, non_blocking=True)
 
-                with torch.cuda.amp.autocast(enabled=args.amp):
+                with torch.amp.autocast("cuda", enabled=args.amp):
                     output = self.classifier(image)
                     loss = self.criterion(output, obj_gt)
 
@@ -98,7 +98,7 @@ class JTTTrainer(BaseTrainer):
             image = image.to(self.device)
             target = target.to(self.device)
             label = target[:, 0]
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 with torch.no_grad():
                     logits = self.classifier(image)
                 pred = logits.argmax(dim=1)
@@ -140,7 +140,7 @@ class JTTTrainer(BaseTrainer):
             image = image.to(self.device, non_blocking=True)
             obj_gt = obj_gt.to(self.device, non_blocking=True)
 
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 output = self.classifier(image)
                 loss = self.criterion(output, obj_gt)
 

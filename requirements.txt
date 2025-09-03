@@ -159,7 +159,6 @@ sniffio
 soupsieve
 stack-data
 stringzilla
-submitit
 sympy
 tabulate
 terminado

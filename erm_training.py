@@ -4,7 +4,6 @@ import torchvision
 import pandas as pd
 import os
 from tqdm import tqdm
-from utils.metrics import *
 from utils.advanced_metrics import *
 import itertools
 

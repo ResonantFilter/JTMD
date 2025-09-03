@@ -6,7 +6,6 @@ LICENSE file in the root directory of this source tree.
 """
 
 import os
-import submitit
 import wandb
 import torch
 import copy
@@ -64,7 +63,7 @@ class BaseTrainer:
         set_seed(args.seed)
         self.device = torch.device(0)
 
-        self.scaler = torch.cuda.amp.GradScaler(enabled=args.amp)
+        self.scaler = torch.amp.GradScaler("cuda", enabled=args.amp)
 
         self._setup_early_stop_metric()
         self._setup_dataset()
@@ -316,7 +315,7 @@ class BaseTrainer:
             criterion=torch.nn.CrossEntropyLoss(),
             epoch=self.cur_epoch,
             device=self.device,
-            wb=wandb,
+            wb=wandb if self.args.wandb else None,
             prefix="te",
             config=self.args
         )
@@ -367,9 +366,6 @@ class BaseTrainer:
         ckpt_fpath = os.path.join(self.ckpt_dir, f"{self.ckpt_fname}.pth")
         if os.path.exists(ckpt_fpath):
             new_args.resume = ckpt_fpath
-        training_callable = self.__class__(new_args)
-        # Resubmission to the queue is performed through the DelayedSubmission object
-        return submitit.helpers.DelayedSubmission(training_callable)
 
     def log_to_wandb(self, log_dict, step=None):
         if step is None:

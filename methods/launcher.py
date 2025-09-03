@@ -6,7 +6,6 @@ LICENSE file in the root directory of this source tree.
 """
 
 import argparse
-import submitit
 import copy
 import os
 
@@ -154,35 +153,10 @@ def main():
                 new_args.early_stop_metric = early_stop_metric
                 args_list.append(new_args)
 
-    if args.slurm_partition is not None:
-        if not os.path.exists(args.slurm_log_dir):
-            os.mkdir(args.slurm_log_dir)
-
-        executor = submitit.AutoExecutor(folder=args.slurm_log_dir)
-        executor.update_parameters(
-            timeout_min=3 * 24 * 60,
-            slurm_partition=args.slurm_partition,
-            gpus_per_node=1,
-            cpus_per_task=max(args.num_workers, 1),
-            mem_gb=64,
-            name=args.slurm_job_name,
-            slurm_constraint=args.slurm_constraint,
-        )
-
-        job_list = []
-        with executor.batch():
-            for job_args in args_list:
-                trainer = Trainer(job_args)
-                job = executor.submit(trainer)
-                job_list.append(job)
-
-        for job in job_list:
-            print("job id: ", job.job_id)
-        output_list = [job.result() for job in job_list]
-    else:
-        for job_args in args_list:
-            trainer = Trainer(job_args)
-            trainer()
+   
+    for job_args in args_list:
+        trainer = Trainer(job_args)
+        trainer()
 
 
 if __name__ == "__main__":

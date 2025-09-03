@@ -62,7 +62,7 @@ class EIILTrainer(BaseTrainer):
                 obj_gt = obj_gt.to(self.device, non_blocking=True)
                 group_gt = group_gt.to(self.device, non_blocking=True)
 
-                with torch.cuda.amp.autocast(enabled=args.amp):
+                with torch.amp.autocast("cuda", enabled=args.amp):
                     output = self.classifier(image)
                     loss = self.criterion(output, obj_gt).mean()
 
@@ -109,13 +109,13 @@ class EIILTrainer(BaseTrainer):
             obj_gt = obj_gt.to(self.device, non_blocking=True)
             group_gt = group_gt.to(self.device, non_blocking=True)
             
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 with torch.no_grad():
                     logits = self.classifier(image)
                 logits_lst.append(logits)
                 label_list.append(obj_gt)
 
-        with torch.cuda.amp.autocast(enabled=args.amp):
+        with torch.amp.autocast("cuda", enabled=args.amp):
             logits_lst = torch.cat(logits_lst, dim=0)
             label_list = torch.cat(label_list, dim=0)
             loss = self.criterion(logits_lst * scale, label_list)
@@ -128,7 +128,7 @@ class EIILTrainer(BaseTrainer):
         optimizer = torch.optim.Adam([env_w], lr=0.001)
         pbar = tqdm(range(self.args.eiil_n_steps), dynamic_ncols=True)
         for _ in pbar:
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 total_n_penalty = 0
                 for idx_class in range(self.num_classes):
                     class_mask = label_list == idx_class
@@ -231,7 +231,7 @@ class EIILTrainer(BaseTrainer):
             obj_gt = obj_gt.to(self.device, non_blocking=True)
             group_index = group_index.to(self.device, non_blocking=True)
 
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 output = self.classifier(image)
                 loss_per_sample = self.criterion(output, obj_gt)
 

@@ -94,7 +94,7 @@ class LfFTrainer(BaseTrainer):
             label = label.to(self.device, non_blocking=True)
             group_gt = group_gt.to(self.device, non_blocking=True)
 
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 spurious_logits = self.bias_discover_net(img)
                 target_logits = self.classifier(img)
                 ce_loss = self.criterion(target_logits, label)

@@ -152,6 +152,7 @@ class SubgroupMetricsTracker:
             })
 
         if self.wandb_logger is not None:
+            print(self.wandb_logger)
             self.wandb_logger.log({
                 f"{self.prefix}_epoch": epoch,
                 f"{self.prefix}_global_loss": global_loss,

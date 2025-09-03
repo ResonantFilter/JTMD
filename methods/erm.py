@@ -30,7 +30,7 @@ class ERMTrainer(BaseTrainer):
             num_groups=self.num_groups,
             device=self.device,
             log_history=True,
-            wandb_logger = wandb if self.args.wandb else None if self.args.wandb else None,
+            wandb_logger = wandb if self.args.wandb else None,
             prefix="tr"
         )
 
@@ -43,7 +43,7 @@ class ERMTrainer(BaseTrainer):
             obj_gt = obj_gt.to(self.device)
             group_gt = group_gt.to(self.device)
 
-            with torch.cuda.amp.autocast(enabled=args.amp):
+            with torch.amp.autocast("cuda", enabled=args.amp):
                 output = self.classifier(image)
                 loss = self.criterion(output, obj_gt)
 

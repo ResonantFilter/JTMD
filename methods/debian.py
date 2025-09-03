@@ -78,7 +78,7 @@ class DebiANTrainer(BaseTrainer):
 
         with torch.no_grad():
             spurious_logits = self.bias_discover_net(image)
-        with torch.cuda.amp.autocast(enabled=args.amp):
+        with torch.amp.autocast("cuda", enabled=args.amp):
             target_logits = self.classifier(image)
 
             label = obj_gt.long()
@@ -136,7 +136,7 @@ class DebiANTrainer(BaseTrainer):
         with torch.no_grad():
             target_logits = self.classifier(image)
 
-        with torch.cuda.amp.autocast(enabled=args.amp):
+        with torch.amp.autocast("cuda", enabled=args.amp):
             spurious_logits = self.bias_discover_net(image)
             label = obj_gt.long()
             label = label.reshape(target_logits.shape[0])
