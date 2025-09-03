@@ -76,8 +76,7 @@ class BaseTrainer:
                 config=args,
                 settings=wandb.Settings(start_method="fork"),
             )
-
-        # loading checkpoint       
+       
         self._before_train()
 
     def _get_train_collate_fn(self):
@@ -355,8 +354,8 @@ class BaseTrainer:
     def checkpoint(self):
         new_args = copy.deepcopy(self.args)
         ckpt_fpath = os.path.join(self.ckpt_dir, f"{self.ckpt_fname}.pth")
-        if os.path.exists(ckpt_fpath):
-            new_args.resume = ckpt_fpath
+        # if os.path.exists(ckpt_fpath):
+        #     new_args.resume = ckpt_fpath
 
     def log_to_wandb(self, log_dict, step=None):
         if step is None:
