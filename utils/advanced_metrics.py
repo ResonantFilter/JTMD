@@ -248,7 +248,7 @@ class SubgroupMetricsTracker:
 
         return summary
     
-    def plot_subgroup_metrics(self, epoch=None, save_dir=None, show=False, annotate_heatmaps=True):
+    def plot_subgroup_metrics(self, epoch=None, save_dir=None, show=False, annotate_heatmaps=True, fontsize=24):
         loss_matrix = self.loss_meter.per_subgroup_avg()
         acc_matrix =  self.acc_meter.per_subgroup_avg()
 
@@ -270,7 +270,7 @@ class SubgroupMetricsTracker:
             fmt=".2f",
             cmap="Reds",
             cbar=True,
-            annot_kws={"size": 24},
+            annot_kws={"size": fontsize},
         )
         ax_loss.set_title("Subgroup Loss Heatmap")
         ax_loss.set_xlabel("Group")
@@ -285,7 +285,7 @@ class SubgroupMetricsTracker:
             fmt=".2f",
             cmap="Blues",
             cbar=True,
-            annot_kws={"size": 24},
+            annot_kws={"size": fontsize},
             vmin=0.0,
             vmax=1.0
         )
@@ -305,7 +305,7 @@ class SubgroupMetricsTracker:
             cbar=True,
             yticklabels=["Group avg", "Gap wrt group 0"],
             xticklabels=[str(i) for i in range(acc_matrix.shape[1])],
-            annot_kws={"size": 24},
+            annot_kws={"size": fontsize},
             vmin=-1.0,
             vmax=+1.0
             
