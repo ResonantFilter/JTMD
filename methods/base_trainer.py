@@ -45,9 +45,6 @@ class BaseTrainer:
             args.exp_root, args.run_name, f"seed_{args.seed}"
         )
 
-        if args.resume is None:
-            os.makedirs(ckpt_dir, exist_ok=True)
-
         print("ckpt_dir: ", ckpt_dir)
         self.ckpt_dir = ckpt_dir
 
@@ -80,14 +77,8 @@ class BaseTrainer:
                 settings=wandb.Settings(start_method="fork"),
             )
 
-        # loading checkpoint
-        if args.resume:
-            ckpt_fpath = args.resume
-            assert os.path.exists(ckpt_fpath), f"{ckpt_fpath} does not exist"
-            state_dict = torch.load(ckpt_fpath, map_location="cpu")
-            self._load_state_dict(state_dict)
-        else:
-            self._before_train()
+        # loading checkpoint       
+        self._before_train()
 
     def _get_train_collate_fn(self):
         return None
