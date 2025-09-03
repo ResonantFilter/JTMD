@@ -25,7 +25,7 @@ class EIILTrainer(BaseTrainer):
     def _setup_method_name_and_default_name(self):
         args = self.args
         args.method = "eiil"
-        default_name = f"{args.method}_T_{args.bias_id_epoch}_es_{args.early_stop_metric}_{args.dataset}"
+        default_name = f"{args.method}_T_{args.bias_id_epoch}_{args.dataset}"
         self.default_name = default_name
 
     def _setup_criterion(self):

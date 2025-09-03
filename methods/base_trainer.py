@@ -65,7 +65,6 @@ class BaseTrainer:
 
         self.scaler = torch.amp.GradScaler("cuda", enabled=args.amp)
 
-        self._setup_early_stop_metric()
         self._setup_dataset()
         self._setup_models()
         self._setup_criterion()

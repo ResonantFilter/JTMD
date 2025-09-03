@@ -24,7 +24,7 @@ class GroupDROTrainer(BaseTrainer):
     def _setup_method_name_and_default_name(self):
         args = self.args
         args.method = "groupdro"
-        default_name = f"{args.method}_{args.group_label}_es_{args.early_stop_metric}_{args.dataset}"
+        default_name = f"{args.method}_{args.group_label}_{args.dataset}"
         self.default_name = default_name
 
     def _get_train_loader(self, train_set):

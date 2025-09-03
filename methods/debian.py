@@ -26,7 +26,7 @@ class DebiANTrainer(BaseTrainer):
         args = self.args
         args.method = "debian"
 
-        default_name = f"{args.method}_es_{args.early_stop_metric}_{args.dataset}"
+        default_name = f"{args.method}_{args.dataset}"
         self.default_name = default_name
 
     def _method_specific_setups(self):
