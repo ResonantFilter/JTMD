@@ -296,7 +296,7 @@ class BaseTrainer:
         raise NotImplementedError
 
     def eval(self):
-        from erm_training import evaluate_model
+        from ..erm_training import evaluate_model
         return evaluate_model(
             self.classifier, 
             test_loader=self.test_loader, 
