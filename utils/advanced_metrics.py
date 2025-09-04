@@ -248,14 +248,14 @@ class SubgroupMetricsTracker:
 
         return summary
     
-    def plot_subgroup_metrics(self, epoch=None, save_dir=None, show=False, annotate_heatmaps=True, fontsize=24):
+    def plot_subgroup_metrics(self, epoch=None, save_dir=None, show=False, annotate_heatmaps=True, fontsize=24, figsize=(24, 16)):
         loss_matrix = self.loss_meter.per_subgroup_avg()
         acc_matrix =  self.acc_meter.per_subgroup_avg()
 
         pergroup_avg = acc_matrix.mean(dim=0).cpu()
         gap_wrt_first = pergroup_avg - pergroup_avg[0]
 
-        fig = plt.figure(figsize=(24, 16))
+        fig = plt.figure(figsize=figsize)
         gs = fig.add_gridspec(2, 2, height_ratios=[4, 1.2], hspace=0.25)
 
 
