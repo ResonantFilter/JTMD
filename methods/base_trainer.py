@@ -277,7 +277,7 @@ class BaseTrainer:
 
         for _ in range(self.cur_epoch, args.epoch + 1):
             self.train()
-            self.eval()
+            # self.eval()
             self.cur_epoch += 1
             
         avg_acc, meter = self.eval()
