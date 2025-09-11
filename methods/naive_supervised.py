@@ -48,6 +48,8 @@ class NaiveSupervisedTrainer(BaseTrainer):
                 loss[group_gt != obj_gt] *= self.uw_factor
                 loss[group_gt == obj_gt] *= self.dw_factor
 
+                loss = loss.mean()
+
             self._loss_backward(loss)
             self._optimizer_step(self.optimizer)
             self._scaler_update()
