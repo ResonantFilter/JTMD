@@ -20,6 +20,7 @@ from ..datasets.waterbirds import Waterbirds
 from ..datasets.BFFHQ import BFFHQ
 from ..datasets.dogs_and_cats import DogsAndCats
 from ..datasets.CMNIST import CMNIST
+from ..datasets.bar import BAR
 
 from ..models.classifiers import (
     get_classifier,
@@ -182,6 +183,11 @@ class BaseTrainer:
                 self.train_set = UrbanCars(env="train", group_label="both", transform=train_transform)
                 self.val_set   = UrbanCars(env="val", group_label="both", transform=test_transform)
                 self.test_set  = UrbanCars(env="test", group_label="both", transform=test_transform)                
+            
+            case "bar":
+                self.train_set = BAR(env="train", bias_amount=args.rho, return_index=True, transform=train_transform)
+                self.val_set   = BAR(env="val", bias_amount=args.rho, return_index=True, transform=test_transform)
+                self.test_set  = BAR(env="test", bias_amount=args.rho, return_index=True, transform=test_transform)
             
             case _:
                 raise NotImplementedError()
