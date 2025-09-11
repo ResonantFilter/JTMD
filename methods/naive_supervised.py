@@ -45,8 +45,8 @@ class NaiveSupervisedTrainer(BaseTrainer):
             with torch.amp.autocast("cuda", enabled=args.amp):
                 output = self.classifier(image)
                 loss = self.criterion(output, obj_gt)
-                loss[group_gt != obj_ft] *= self.uw_factor
-                loss[group_gt == obj_ft] *= self.dw_factor
+                loss[group_gt != obj_gt] *= self.uw_factor
+                loss[group_gt == obj_gt] *= self.dw_factor
 
             self._loss_backward(loss)
             self._optimizer_step(self.optimizer)
