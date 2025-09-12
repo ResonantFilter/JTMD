@@ -74,6 +74,8 @@ def parse_args():
     parser.add_argument("--optimizer", type=str, default="sgd")
     parser.add_argument("--reweight_groups", action="store_true")
     parser.add_argument("--reweight_classes", action="store_true")
+    parser.add_argument("--uw_factor", type=float, default=10.0)
+    parser.add_argument("--dw_factor", type=float, default=0.10)
 
     parser.add_argument(
         "--exp_root", type=str, default="exp"
