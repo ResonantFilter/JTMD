@@ -7,6 +7,9 @@ from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
 
 
 class NaiveSupervisedTrainer(BaseTrainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+    
     def _setup_method_name_and_default_name(self):
         args = self.args
         args.method = "naivesupervised"
