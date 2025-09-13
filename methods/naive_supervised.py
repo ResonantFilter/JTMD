@@ -2,6 +2,7 @@ import torch
 
 import wandb
 from tqdm import tqdm
+from torch.utils import data
 from .base_trainer import BaseTrainer
 from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
 
@@ -9,6 +10,23 @@ from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
 class NaiveSupervisedTrainer(BaseTrainer):
     def __init__(self, *args, **kwargs):
         super().__init__()
+        self.train_loader = None
+
+    def set_train_loader(self, config):
+        sampler = data.WeightedRandomSampler(
+            self.train_set.get_sampling_weights(classes_only=False), 
+            num_samples=len(self.train_set), 
+            replacement=True
+        )
+        
+        train_loader = data.DataLoader(
+            self.train_set,
+            batch_size=config.batch_size,
+            sampler=sampler,
+            num_workers=config.num_workers
+        )
+
+        self.train_loader = train_loader
     
     def _setup_method_name_and_default_name(self):
         args = self.args
