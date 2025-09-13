@@ -10,6 +10,7 @@ from ..utils.advanced_metrics import AverageMeter, SubgroupMetricsTracker
 class NaiveSupervisedTrainer(BaseTrainer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._setup_all()
         self.train_loader = None
 
     def set_train_loader(self, config):
