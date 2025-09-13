@@ -248,7 +248,7 @@ class SubgroupMetricsTracker:
 
         return summary
     
-    def plot_subgroup_metrics(self, epoch=None, save_dir=None, show=False, annotate_heatmaps=True, fontsize=24, figsize=(24, 16)):
+    def plot_subgroup_metrics(self, epoch=None, save_dir=None, show=False, annotate_heatmaps=True, fontsize=24, figsize=(24, 16), show_gap=False):
         loss_matrix = self.loss_meter.per_subgroup_avg()
         acc_matrix =  self.acc_meter.per_subgroup_avg()
 
@@ -293,32 +293,36 @@ class SubgroupMetricsTracker:
         ax_acc.set_xlabel("Group")
         ax_acc.set_ylabel("Class")
 
-        # Per-group metrics heatmap (bottom right)
-        ax_avg = fig.add_subplot(gs[1, 1])
-        arr = torch.vstack([pergroup_avg, gap_wrt_first]).numpy()
-        sns.heatmap(
-            arr,
-            ax=ax_avg,
-            annot=True,
-            fmt=".2f",
-            cmap="Purples",
-            cbar=True,
-            yticklabels=["Group avg", "Gap wrt group 0"],
-            xticklabels=[str(i) for i in range(acc_matrix.shape[1])],
-            annot_kws={"size": fontsize},
-            vmin=-1.0,
-            vmax=+1.0
-            
-        )
-        ax_avg.set_xlabel("Group")
-        ax_avg.set_title("Per-group avg & gap (accuracy)")
+        if show_gap:
+            # Per-group metrics heatmap (bottom right)
+            ax_avg = fig.add_subplot(gs[1, 1])
+            arr = torch.vstack([pergroup_avg, gap_wrt_first]).numpy()
+            sns.heatmap(
+                arr,
+                ax=ax_avg,
+                annot=True,
+                fmt=".2f",
+                cmap="Purples",
+                cbar=True,
+                yticklabels=["Group avg", "Gap wrt group 0"],
+                xticklabels=[str(i) for i in range(acc_matrix.shape[1])],
+                annot_kws={"size": fontsize},
+                vmin=-1.0,
+                vmax=+1.0
+                
+            )
+            ax_avg.set_xlabel("Group")
+            ax_avg.set_title("Per-group avg & gap (accuracy)")
+        else:
+            ax_unused = fig.add_subplot(gs[1, 1])
+            ax_unused.axis("off")
 
         # Hide bottom left subplot (not used)
         ax_unused = fig.add_subplot(gs[1, 0])
         ax_unused.axis("off")
 
         # Main title and tight layout
-        fig.suptitle(f"{self.prefix}, epoch: {epoch}", fontsize=22)        
+        fig.suptitle(f"{self.prefix}, epoch: {epoch}", fontsize=fontsize+4)        
 
         
         if save_dir:
